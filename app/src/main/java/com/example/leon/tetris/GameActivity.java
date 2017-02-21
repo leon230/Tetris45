@@ -3,6 +3,7 @@ package com.example.leon.tetris;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -16,7 +17,7 @@ public class GameActivity extends Activity {
 
     Canvas canvas;
     TetrisView tetrisView;
-    Bitmap sigleSquare;
+    Bitmap squareBitmap;
 
     int screenWidth;
     int screenHeight;
@@ -33,6 +34,9 @@ public class GameActivity extends Activity {
     long lastFrameTime;
     int fps;
     int score;
+    //Block matrix
+    int[] blockX;
+    int[] blockY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,8 @@ public class GameActivity extends Activity {
         //setContentView(R.layout.activity_game);
 
         initializeScreen();
+        blockX = new int[4];
+        blockY = new int[4];
         tetrisView = new TetrisView(this);
         setContentView(tetrisView);
 
@@ -55,7 +61,14 @@ public class GameActivity extends Activity {
             super(context);
             gameSurfaceHolder = getHolder();
             paint = new Paint();
+
+            getBlock();
         }
+        public void getBlock(){
+            blockX[0] = 40;
+            blockY[0] = 40;
+        }
+
 
         @Override
         public void run() {
@@ -66,7 +79,7 @@ public class GameActivity extends Activity {
             }
         }
         public void updateGame(){
-
+            //blockY[0]--;
         }
         public void drawGame() {
             if (gameSurfaceHolder.getSurface().isValid()){
@@ -74,15 +87,17 @@ public class GameActivity extends Activity {
                 //Paint paint = new Paint();
                 canvas.drawColor(Color.GRAY);//the background
                 paint.setColor(Color.argb(255, 255, 255, 255));
-                paint.setTextSize(topGap/2);
-                canvas.drawText("Score:" + score + "  Hi:" + "10", 10, topGap-6, paint);
+                paint.setTextSize(topGap/3);
+                canvas.drawText("Score:" + score, 10, topGap-20, paint);
 
-                //draw a border - 4 lines, top right, bottom , left
+                //Draw borders
                 paint.setStrokeWidth(3);//4 pixel border
                 canvas.drawLine(leftGap,topGap,screenWidth-rightGap,topGap,paint);
                 canvas.drawLine(leftGap,topGap,leftGap,screenHeight - downGap,paint);
                 canvas.drawLine(leftGap,screenHeight - downGap,screenWidth - rightGap,screenHeight - downGap,paint);
                 canvas.drawLine(screenWidth - rightGap,screenHeight - downGap,screenWidth - rightGap,topGap,paint);
+
+                canvas.drawBitmap(squareBitmap, blockX[0]*blockSize, (blockY[0]*blockSize), paint);
 
 
                 gameSurfaceHolder.unlockCanvasAndPost(canvas);
@@ -112,11 +127,13 @@ public class GameActivity extends Activity {
         topGap = screenHeight/14;
         downGap = screenHeight/14;
         leftGap = screenWidth/25;
-        rightGap = screenWidth/10;
+        rightGap = screenWidth/8;
         //Determine block size
-        blockSize = (screenWidth - rightGap)/40;
+        blockSize = (screenWidth - rightGap - leftGap)/40;
         numblocksHigh = (screenHeight - topGap)/blockSize;
-        numBlocksWide = (screenWidth - rightGap);
+        numBlocksWide = 40;
+
+        squareBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.square);
 
 
     }
