@@ -86,7 +86,7 @@ public class GameActivity extends Activity {
                 canvas = gameSurfaceHolder.lockCanvas();
                 //Paint paint = new Paint();
                 canvas.drawColor(Color.GRAY);//the background
-                paint.setColor(Color.argb(255, 255, 255, 255));
+                paint.setColor(Color.argb(255, 255, 255, 100));
                 paint.setTextSize(topGap/3);
                 canvas.drawText("Score:" + score, 10, topGap-20, paint);
 
