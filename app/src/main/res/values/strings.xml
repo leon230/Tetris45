@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Tetris</string>
+    <string name="btnPlay">Play</string>
+    <string name="title_activity_game">GameActivity</string>
+</resources>
