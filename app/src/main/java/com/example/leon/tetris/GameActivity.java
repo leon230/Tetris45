@@ -33,6 +33,7 @@ public class GameActivity extends Activity {
 
     long lastFrameTime;
     int fps;
+    int gameSpeed = 500;
     int score;
     //Block matrix
     int[] blockX;
@@ -65,8 +66,9 @@ public class GameActivity extends Activity {
             getBlock();
         }
         public void getBlock(){
-            blockX[0] = 40;
-            blockY[0] = 40;
+            blockX[0] = numBlocksWide/2;
+            System.out.println("numblocksHigh : " + numblocksHigh);
+            blockY[0] = 10;
         }
 
 
@@ -75,11 +77,12 @@ public class GameActivity extends Activity {
             while (playingTetris) {
                 updateGame();
                 drawGame();
-//            controlFPS();
+            controlFPS();
             }
         }
         public void updateGame(){
-            //blockY[0]--;
+            System.out.println(blockY[0]);
+            blockY[0]++;
         }
         public void drawGame() {
             if (gameSurfaceHolder.getSurface().isValid()){
@@ -102,6 +105,24 @@ public class GameActivity extends Activity {
 
                 gameSurfaceHolder.unlockCanvasAndPost(canvas);
             }
+        }
+        public void controlFPS() {
+            long timeThisFrame = (System.currentTimeMillis() - lastFrameTime);
+            long timeToSleep = gameSpeed - timeThisFrame;
+            if (timeThisFrame > 0) {
+                fps = (int) (1000 / timeThisFrame);
+            }
+            if (timeToSleep > 0) {
+
+                try {
+                    gameThread.sleep(timeToSleep);
+                } catch (InterruptedException e) {
+                    //Print an error message to the consoleLog.e("error", "failed to load sound files);
+                }
+
+            }
+
+            lastFrameTime = System.currentTimeMillis();
         }
         public void pause() {
             playingTetris = false;
@@ -129,11 +150,13 @@ public class GameActivity extends Activity {
         leftGap = screenWidth/25;
         rightGap = screenWidth/8;
         //Determine block size
-        blockSize = (screenWidth - rightGap - leftGap)/40;
+//        blockSize = (screenWidth - rightGap - leftGap)/40;
+        blockSize = screenWidth/40;
         numblocksHigh = (screenHeight - topGap)/blockSize;
         numBlocksWide = 40;
 
         squareBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.square);
+        squareBitmap = Bitmap.createScaledBitmap(squareBitmap, blockSize, blockSize, false);
 
 
     }
