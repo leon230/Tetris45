@@ -18,6 +18,7 @@ public class GameActivity extends Activity {
     Canvas canvas;
     TetrisView tetrisView;
     Bitmap squareBitmap;
+    Bitmap playgroundBitmap;
 
     int screenWidth;
     int screenHeight;
@@ -67,7 +68,6 @@ public class GameActivity extends Activity {
         }
         public void getBlock(){
             blockX[0] = numBlocksWide/2;
-            System.out.println("numblocksHigh : " + numblocksHigh);
             blockY[0] = 10;
         }
 
@@ -81,7 +81,7 @@ public class GameActivity extends Activity {
             }
         }
         public void updateGame(){
-            System.out.println(blockY[0]);
+//            System.out.println(blockY[0]);
             blockY[0]++;
         }
         public void drawGame() {
@@ -96,11 +96,20 @@ public class GameActivity extends Activity {
                 //Draw borders
                 paint.setStrokeWidth(3);//4 pixel border
                 canvas.drawLine(leftGap,topGap,screenWidth-rightGap,topGap,paint);
-                canvas.drawLine(leftGap,topGap,leftGap,screenHeight - downGap,paint);
-                canvas.drawLine(leftGap,screenHeight - downGap,screenWidth - rightGap,screenHeight - downGap,paint);
-                canvas.drawLine(screenWidth - rightGap,screenHeight - downGap,screenWidth - rightGap,topGap,paint);
+                canvas.drawLine(leftGap,topGap,leftGap,numblocksHigh*blockSize + topGap,paint);
+                canvas.drawLine(leftGap,screenHeight - downGap - topGap,screenWidth - rightGap,screenHeight - downGap - topGap,paint);
+                canvas.drawLine(screenWidth - rightGap,screenHeight - downGap - topGap,screenWidth - rightGap,topGap,paint);
 
                 canvas.drawBitmap(squareBitmap, blockX[0]*blockSize, (blockY[0]*blockSize), paint);
+                for (int j = topGap/blockSize; j < 37; j++){
+                for (int i = 1 + leftGap/blockSize; i <= 20; i++){
+//
+                        canvas.drawBitmap(playgroundBitmap, i*blockSize, j*blockSize, paint);
+//                        canvas.drawBitmap(playgroundBitmap, 2*blockSize, 1*blockSize, paint);
+//                        canvas.drawBitmap(playgroundBitmap, 3*blockSize, 1*blockSize, paint);
+                    }
+//
+                }
 
 
                 gameSurfaceHolder.unlockCanvasAndPost(canvas);
@@ -145,18 +154,23 @@ public class GameActivity extends Activity {
         display.getSize(size);
         screenWidth = size.x;
         screenHeight = size.y;
-        topGap = screenHeight/14;
-        downGap = screenHeight/14;
-        leftGap = screenWidth/25;
-        rightGap = screenWidth/8;
+
+
         //Determine block size
 //        blockSize = (screenWidth - rightGap - leftGap)/40;
-        blockSize = screenWidth/40;
-        numblocksHigh = (screenHeight - topGap)/blockSize;
-        numBlocksWide = 40;
+        blockSize = 45;
+        topGap = 2*blockSize;
+        downGap = blockSize;
+        leftGap = blockSize;
+        rightGap = blockSize*2;
+        System.out.println("leftGap: " + leftGap + " blockSize " + blockSize + "topGap " + topGap);
+        numblocksHigh = (screenHeight - topGap - downGap);
+        numBlocksWide = 20;
 
         squareBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.square);
         squareBitmap = Bitmap.createScaledBitmap(squareBitmap, blockSize, blockSize, false);
+        playgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.playground);
+        playgroundBitmap = Bitmap.createScaledBitmap(playgroundBitmap, blockSize, blockSize, false);
 
 
     }
