@@ -179,7 +179,7 @@ public class GameActivity extends Activity {
     public void initializeScreen(){
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
-        display.getSize(size);/
+        display.getSize(size);
         screenWidth = size.x;
         screenHeight = size.y;
 

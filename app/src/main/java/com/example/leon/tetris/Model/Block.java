@@ -20,7 +20,7 @@ public class Block {
 
     public int[][] getBlocksArray() {
         switch (blockType){
-            case 0: return blocksArray;/
+            case 0: return blocksArray;
         }
 
         return blocksArray;
