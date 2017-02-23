@@ -210,7 +210,7 @@ public class GameActivity extends Activity {
         }
 //        backgroundArray[2][2] = 1;
 
-    }
+    }aa
     public void updatebackgroundArray(int[] coordX, int[] coordY){
         for (int i = 0; i < coordX.length; i++){
             if (coordX[i] != 0 && coordY[i] != 0){
