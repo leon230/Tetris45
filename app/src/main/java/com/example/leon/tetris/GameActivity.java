@@ -39,6 +39,8 @@ public class GameActivity extends Activity {
     //Block matrix
     int[] blockX;
     int[] blockY;
+    int figureLenngth;
+    int[] [] backgroundArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +48,8 @@ public class GameActivity extends Activity {
         //setContentView(R.layout.activity_game);
 
         initializeScreen();
-        blockX = new int[4];
-        blockY = new int[4];
+        blockX = new int[10];
+        blockY = new int[10];
         tetrisView = new TetrisView(this);
         setContentView(tetrisView);
 
@@ -69,6 +71,12 @@ public class GameActivity extends Activity {
         public void getBlock(){
             blockX[0] = numBlocksWide/2;
             blockY[0] = 10;
+
+            blockX[1] = blockX[0];
+            blockY[1] = blockY[0]-1;
+            figureLenngth = 2;
+
+
         }
 
 
@@ -77,40 +85,60 @@ public class GameActivity extends Activity {
             while (playingTetris) {
                 updateGame();
                 drawGame();
-            controlFPS();
+                controlFPS();
             }
         }
         public void updateGame(){
 //            System.out.println(blockY[0]);
             blockY[0]++;
+            blockY[1]++;
+            for (int i = 0; i <= figureLenngth; i++){
+                if (blockY[i] == numblocksHigh){
+                    updatebackgroundArray(blockX,blockY);
+                    getBlock();
+                }
+            }
         }
         public void drawGame() {
             if (gameSurfaceHolder.getSurface().isValid()){
                 canvas = gameSurfaceHolder.lockCanvas();
                 //Paint paint = new Paint();
                 canvas.drawColor(Color.GRAY);//the background
-                paint.setColor(Color.argb(255, 255, 255, 100));
+//                paint.setColor(Color.argb(255, 255, 255, 0));
+                paint.setColor(Color.DKGRAY);
                 paint.setTextSize(topGap/3);
                 canvas.drawText("Score:" + score, 10, topGap-20, paint);
 
                 //Draw borders
                 paint.setStrokeWidth(3);//4 pixel border
-                canvas.drawLine(leftGap,topGap,screenWidth-rightGap,topGap,paint);
-                canvas.drawLine(leftGap,topGap,leftGap,numblocksHigh*blockSize + topGap,paint);
-                canvas.drawLine(leftGap,screenHeight - downGap - topGap,screenWidth - rightGap,screenHeight - downGap - topGap,paint);
-                canvas.drawLine(screenWidth - rightGap,screenHeight - downGap - topGap,screenWidth - rightGap,topGap,paint);
+                canvas.drawRect(leftGap,topGap,screenWidth - rightGap, numblocksHigh* blockSize, paint);
 
-                canvas.drawBitmap(squareBitmap, blockX[0]*blockSize, (blockY[0]*blockSize), paint);
-                for (int j = topGap/blockSize; j < 37; j++){
-                for (int i = 1 + leftGap/blockSize; i <= 20; i++){
-//
+
+
+                //System.out.print("------------------------------------------------------------");
+                for (int j = topGap/blockSize; j < (numblocksHigh); j++){
+                    for (int i = leftGap/blockSize; i < (screenWidth-rightGap)/blockSize; i++){
                         canvas.drawBitmap(playgroundBitmap, i*blockSize, j*blockSize, paint);
-//                        canvas.drawBitmap(playgroundBitmap, 2*blockSize, 1*blockSize, paint);
-//                        canvas.drawBitmap(playgroundBitmap, 3*blockSize, 1*blockSize, paint);
                     }
-//
+                }
+//                System.out.println("blocksHigh : " + numblocksHigh + "screenHeight: " + screenHeight + " top: " + topGap + " down: " + downGap + "blocksize: " + blockSize);
+//                System.out.print(numblocksHigh + "  2");
+                //Draw figure
+                for (int i = 0; i < figureLenngth; i++) {
+                    canvas.drawBitmap(squareBitmap, blockX[i] * blockSize, (blockY[i] * blockSize), paint);
                 }
 
+                //Draw background blocks
+                for (int i = 0; i < numblocksHigh; i++) {
+                    //System.out.print("\n");
+                    for (int j = 0; j < numBlocksWide; j++) {
+                        //System.out.print(backgroundArray[i][j]);
+                        if (backgroundArray[i][j] == 1){
+
+                            canvas.drawBitmap(squareBitmap,j*blockSize , i*blockSize, paint);
+                        }
+                    }
+                }
 
                 gameSurfaceHolder.unlockCanvasAndPost(canvas);
             }
@@ -158,21 +186,38 @@ public class GameActivity extends Activity {
 
         //Determine block size
 //        blockSize = (screenWidth - rightGap - leftGap)/40;
-        blockSize = 45;
+
+        numBlocksWide = 20;
+        blockSize = (screenWidth - leftGap - rightGap)/numBlocksWide;
         topGap = 2*blockSize;
         downGap = blockSize;
         leftGap = blockSize;
-        rightGap = blockSize*2;
-        System.out.println("leftGap: " + leftGap + " blockSize " + blockSize + "topGap " + topGap);
-        numblocksHigh = (screenHeight - topGap - downGap);
-        numBlocksWide = 20;
+        rightGap = blockSize*4;
+        numblocksHigh = (screenHeight - topGap - downGap)/blockSize;
+//        System.out.println("leftGap: " + leftGap + " blockSize " + blockSize + "topGap " + topGap);
+
 
         squareBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.square);
         squareBitmap = Bitmap.createScaledBitmap(squareBitmap, blockSize, blockSize, false);
         playgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.playground);
         playgroundBitmap = Bitmap.createScaledBitmap(playgroundBitmap, blockSize, blockSize, false);
 
+        backgroundArray = new int[numblocksHigh][numBlocksWide];
+        for (int i = 0; i < numblocksHigh; i++) {
+            for (int j = 0; j < numBlocksWide; j++) {
+                backgroundArray[i][j] = 0;
+            }
+        }
+//        backgroundArray[2][2] = 1;
 
+    }
+    public void updatebackgroundArray(int[] coordX, int[] coordY){
+        for (int i = 0; i < coordX.length; i++){
+            if (coordX[i] != 0 && coordY[i] != 0){
+                System.out.println("X: " + coordX[i] + " Y: " + coordY[i] );
+                backgroundArray[coordY[i]-1][coordX[i]] = 1;
+            }
+        }
     }
     @Override
     protected void onStop() {
@@ -185,7 +230,6 @@ public class GameActivity extends Activity {
 
         finish();
     }
-
 
     @Override
     protected void onResume() {
