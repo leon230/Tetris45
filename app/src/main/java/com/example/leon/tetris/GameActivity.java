@@ -93,7 +93,7 @@ public class GameActivity extends Activity {
             blockY[0]++;
             blockY[1]++;
             for (int i = 0; i <= figureLenngth; i++){
-                if (blockY[i] == numblocksHigh){
+                if (blockY[i] == numblocksHigh ||  backgroundArray[blockY[i]][blockX[i]] == 1){
                     updatebackgroundArray(blockX,blockY);
                     getBlock();
                 }

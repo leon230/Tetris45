@@ -8,9 +8,25 @@ import java.util.Random;
 
 public class Block {
     private int blockType;
-    private int[] blocksArray;
-    Random random = new Random();
+    private int[][] blocksArray;
 
+    public int getBlockType() {
+        return blockType;
+    }
 
+    public void setBlockType(int blockType) {
+        this.blockType = blockType;
+    }
 
+    public int[][] getBlocksArray() {
+        switch (blockType){
+            case 0: return blocksArray;
+        }
+
+        return blocksArray;
+    }
+
+    public void setBlocksArray(int[][] blocksArray) {
+        this.blocksArray = blocksArray;
+    }
 }
