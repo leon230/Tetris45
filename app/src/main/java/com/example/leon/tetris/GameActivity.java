@@ -13,6 +13,8 @@ import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.example.leon.tetris.Model.Block;
+
 public class GameActivity extends Activity {
 
     Canvas canvas;
@@ -75,6 +77,11 @@ public class GameActivity extends Activity {
             blockX[1] = blockX[0];
             blockY[1] = blockY[0]-1;
             figureLenngth = 2;
+
+            Block block  = new Block();
+            block.setStartingX(numBlocksWide/2);
+            block.setStartingY(10);
+            block.setBlockType(0);
 
 
         }

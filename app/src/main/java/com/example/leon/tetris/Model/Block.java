@@ -8,7 +8,10 @@ import java.util.Random;
 
 public class Block {
     private int blockType;
-    private int[][] blocksArray;
+    private  int startingX;
+    private  int startingY;
+    private int[] blocksX;
+    private int[] blocksY;
 
     public int getBlockType() {
         return blockType;
@@ -18,15 +21,36 @@ public class Block {
         this.blockType = blockType;
     }
 
-    public int[][] getBlocksArray() {
+    public int getStartingX() {
+        return startingX;
+    }
+
+    public void setStartingX(int startingX) {
+        this.startingX = startingX;
+    }
+
+    public int getStartingY() {
+        return startingY;
+    }
+
+    public void setStartingY(int startingY) {
+        this.startingY = startingY;
+    }
+
+    public void createBlocksArray() {
+        blocksX = new int[3];
+        blocksY = new int[3];
+
         switch (blockType){
-            case 0: return blocksArray;
+            case 0: blocksX[0] = startingX;
+                    blocksY[0] = startingY;
+                    blocksX[1] = blocksX[0];
+                    blocksY[1] = blocksY[0] - 1;
+                    blocksX[2] = blocksX[0] - 1;
+                    blocksY[2] = blocksY[0] - 1;
+                    blocksX[2] = blocksX[0] + 1;
+                    blocksY[2] = blocksY[0] - 1;
         }
-
-        return blocksArray;
     }
 
-    public void setBlocksArray(int[][] blocksArray) {
-        this.blocksArray = blocksArray;
-    }
 }
