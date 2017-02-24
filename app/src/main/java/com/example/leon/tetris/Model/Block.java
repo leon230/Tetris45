@@ -37,20 +37,32 @@ public class Block {
         this.startingY = startingY;
     }
 
+    public int[] getBlocksX() {
+        return blocksX;
+    }
+
+
+    public int[] getBlocksY() {
+        return blocksY;
+    }
+
+
     public void createBlocksArray() {
-        blocksX = new int[3];
-        blocksY = new int[3];
+        blocksX = new int[10];
+        blocksY = new int[10];
 
         switch (blockType){
-            case 0: blocksX[0] = startingX;
+            case 0: setStartingY(2);
+                    blocksX[0] = startingX;
                     blocksY[0] = startingY;
-                    blocksX[1] = blocksX[0];
-                    blocksY[1] = blocksY[0] - 1;
-                    blocksX[2] = blocksX[0] - 1;
-                    blocksY[2] = blocksY[0] - 1;
+                    blocksX[1] = blocksX[0] + 1;
+                    blocksY[1] = blocksY[0];
                     blocksX[2] = blocksX[0] + 1;
                     blocksY[2] = blocksY[0] - 1;
+                    blocksX[3] = blocksX[0] + 2;
+                    blocksY[3] = blocksY[0];
         }
+
     }
 
 }
