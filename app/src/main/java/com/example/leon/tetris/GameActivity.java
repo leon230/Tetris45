@@ -36,7 +36,7 @@ public class GameActivity extends Activity {
 
     long lastFrameTime;
     int fps;
-    int gameSpeed = 500;
+    int gameSpeed = 400;
     int score;
     //Block matrix
     int[] blockX;
@@ -79,7 +79,6 @@ public class GameActivity extends Activity {
             blockY = block.getBlocksY();
         }
 
-
         @Override
         public void run() {
             while (playingTetris) {
@@ -95,10 +94,13 @@ public class GameActivity extends Activity {
                     blockY[i]++;
                 }
             }
-            for (int i = 0; i < blockY.length; i++){
-                if (blockY[i] == numblocksHigh ||  backgroundArray[blockY[i]][blockX[i]] == 1){
-                    updatebackgroundArray(blockX,blockY);
-                    getBlock();
+            for (int i = 1; i < blockY.length; i++){
+                System.out.println("i:" + i + " blocky: " + blockY[i] + " blcokx:" + blockX[i]);
+                if(blockX[i] != 0) {
+                    if (blockY[i] == numblocksHigh || backgroundArray[blockY[i]][blockX[i] - 1] == 1) {
+                        updatebackgroundArray(blockX, blockY);
+                        getBlock();
+                    }
                 }
             }
         }
@@ -115,17 +117,11 @@ public class GameActivity extends Activity {
                 //Draw borders
                 paint.setStrokeWidth(3);//4 pixel border
                 //canvas.drawRect(leftGap,topGap,screenWidth - rightGap, numblocksHigh * blockSize, paint);
-
-
-
-                //System.out.print("------------------------------------------------------------");
                 for (int j = topGap/blockSize; j < (numblocksHigh); j++){
                     for (int i = Math.round(leftGap/blockSize); i < (screenWidth-rightGap)/blockSize; i++){
                         canvas.drawBitmap(playgroundBitmap, i*blockSize, j*blockSize, paint);
                     }
                 }
-//                System.out.println("blocksHigh : " + numblocksHigh + "screenHeight: " + screenHeight + " top: " + topGap + " down: " + downGap + "blocksize: " + blockSize);
-//                System.out.print(numblocksHigh + "  2");
                 //Draw figure
                 for (int i = 0; i < blockY.length; i++) {
                     if (blockY[i] != 0) {
@@ -133,18 +129,22 @@ public class GameActivity extends Activity {
                     }
                 }
 
-                //Draw background blocks
                 for (int i = 0; i < numblocksHigh; i++) {
                     //System.out.print("\n");
                     for (int j = 0; j < numBlocksWide; j++) {
                         //System.out.print(backgroundArray[i][j]);
-                        if (backgroundArray[i][j] == 1){
-
-                            canvas.drawBitmap(squareBitmap,j*blockSize , i*blockSize, paint);
-                        }
                     }
                 }
 
+                //Draw background blocks
+                for (int i = 0; i < numblocksHigh; i++) {
+                    for (int j = 0; j < numBlocksWide; j++) {
+                        if (backgroundArray[i][j] == 1){
+                           System.out.println("I and J -------------i: " + i + "j: " + j);
+                            canvas.drawBitmap(squareBitmap,(j + 1)*blockSize , i*blockSize, paint);
+                        }
+                    }
+                }
                 gameSurfaceHolder.unlockCanvasAndPost(canvas);
             }
         }
@@ -161,7 +161,6 @@ public class GameActivity extends Activity {
                 } catch (InterruptedException e) {
                     //Print an error message to the consoleLog.e("error", "failed to load sound files);
                 }
-
             }
 
             lastFrameTime = System.currentTimeMillis();
@@ -186,18 +185,19 @@ public class GameActivity extends Activity {
             switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_UP:
                     if (motionEvent.getX() >= screenWidth / 2) {
-
-                        //turn right
+                        //move right
                         for (int i = 0; i < blockX.length; i++) {
-                            if (blockX[i] != 0 && blockX[i] < numBlocksWide){
+                            if (blockX[i] != 0 && blockX[3] != numBlocksWide){
                                 blockX[i]++;
                             }
                         }
                     } else {
-                        //turn left
-                        for (int i = 0; i < blockX.length; i++) {
-                            if (blockX[i] != 0 && blockX[i] > 0){
-                                blockX[i]--;
+                        //move left
+                        if (blockX[0] > 1) {
+                            for (int i = 0; i < blockX.length; i++) {
+                                if (blockX[i] != 0) {
+                                    blockX[i]--;
+                                }
                             }
                         }
                     }
@@ -214,39 +214,48 @@ public class GameActivity extends Activity {
 
 
         //Determine block size
-//        blockSize = (screenWidth - rightGap - leftGap)/40;
-
         numBlocksWide = 10;
         leftGap= 100;
         rightGap = 100;
         blockSize = (screenWidth - leftGap - rightGap)/numBlocksWide;
         topGap = 2*blockSize;
         downGap = blockSize/2;
-
         numblocksHigh = (screenHeight - topGap - downGap)/blockSize;
-//        System.out.println("leftGap: " + leftGap + " blockSize " + blockSize + "topGap " + topGap);
-
-
         squareBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.square);
         squareBitmap = Bitmap.createScaledBitmap(squareBitmap, blockSize, blockSize, false);
         playgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.playground);
         playgroundBitmap = Bitmap.createScaledBitmap(playgroundBitmap, blockSize, blockSize, false);
 
-        backgroundArray = new int[numblocksHigh][numBlocksWide + 1];
+        backgroundArray = new int[numblocksHigh][numBlocksWide];
         for (int i = 0; i < numblocksHigh; i++) {
             for (int j = 0; j < numBlocksWide; j++) {
                 backgroundArray[i][j] = 0;
             }
         }
-//        backgroundArray[2][2] = 1;
+        backgroundArray[9][9] = 1;
+
+        for (int i = 0; i < numblocksHigh; i++) {
+            System.out.print("\n");
+            for (int j = 0; j < numBlocksWide; j++) {
+                System.out.print(backgroundArray[i][j]);
+            }
+        }
 
     }
     public void updatebackgroundArray(int[] coordX, int[] coordY){
         for (int i = 0; i < coordX.length; i++){
             if (coordX[i] != 0 && coordY[i] != 0){
-                backgroundArray[coordY[i]-1][coordX[i]] = 1;
+                backgroundArray[coordY[i]-1][coordX[i] - 1] = 1;
             }
         }
+        System.out.println("Array before: ");
+        for (int i = 0; i < numblocksHigh; i++) {
+            //System.out.print("\n");
+            for (int j = 0; j < numBlocksWide; j++) {
+            }
+        }
+
+        System.out.print("\n");
     }
     @Override
     protected void onStop() {
@@ -256,7 +265,6 @@ public class GameActivity extends Activity {
             tetrisView.pause();
             break;
         }
-
         finish();
     }
 
